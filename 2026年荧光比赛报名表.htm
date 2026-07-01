@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="zh-CN"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2026年荧光比赛报名表</title>
+<script src="2026%E5%B9%B4%E8%8D%A7%E5%85%89%E6%AF%94%E8%B5%9B%E6%8A%A5%E5%90%8D%E8%A1%A8_files/supabase-js@2"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    color: #fff;
+  }
+  .form-page, .admin-page, .success-page { display: none; }
+
+  .header {
+    text-align: center;
+    padding: 40px 20px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -50%; left: -50%;
+    width: 200%; height: 200%;
+    background: radial-gradient(circle, rgba(0,255,128,0.08) 0%, transparent 60%);
+    animation: glow 6s ease-in-out infinite;
+  }
+  @keyframes glow {
+    0%, 100% { transform: scale(1); opacity: 0.5; }
+    50% { transform: scale(1.2); opacity: 1; }
+  }
+  .header h1 {
+    font-size: 24px; font-weight: 700; position: relative;
+    text-shadow: 0 0 20px rgba(0,255,128,0.4); letter-spacing: 2px;
+  }
+  .header .subtitle {
+    font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 8px; position: relative;
+  }
+  .fluorescent-line {
+    height: 2px; margin: 0 30px;
+    background: linear-gradient(90deg, transparent, #00ff80, #00ccff, #ff00ff, transparent);
+    border-radius: 2px; box-shadow: 0 0 10px rgba(0,255,128,0.5);
+  }
+  .form-container { max-width: 420px; margin: 24px auto; padding: 0 16px; }
+  .form-group { margin-bottom: 18px; position: relative; }
+  .form-group label {
+    display: block; font-size: 14px; font-weight: 500; margin-bottom: 6px;
+    color: rgba(255,255,255,0.85);
+  }
+  .form-group label .required { color: #ff4d6a; margin-left: 2px; }
+  .form-group input, .form-group select {
+    width: 100%; padding: 12px 14px;
+    border: 1px solid rgba(255,255,255,0.15); border-radius: 8px;
+    background: rgba(255,255,255,0.06); color: #fff; font-size: 15px;
+    transition: all 0.3s; -webkit-appearance: none; appearance: none;
+  }
+  .form-group input::placeholder { color: rgba(255,255,255,0.3); }
+  .form-group input:focus, .form-group select:focus {
+    outline: none; border-color: #00ff80;
+    box-shadow: 0 0 0 3px rgba(0,255,128,0.15); background: rgba(255,255,255,0.1);
+  }
+  .form-group select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2300ff80' stroke-width='1.5' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right 14px center; padding-right: 36px;
+  }
+  .form-group select option { background: #1a1a2e; color: #fff; }
+  .form-group .error-msg { font-size: 12px; color: #ff4d6a; margin-top: 4px; display: none; }
+  .submit-btn {
+    width: 100%; padding: 14px; border: none; border-radius: 8px;
+    background: linear-gradient(135deg, #00ff80, #00ccff); color: #0f0c29;
+    font-size: 16px; font-weight: 700; letter-spacing: 2px; cursor: pointer;
+    transition: all 0.3s; margin-top: 8px;
+  }
+  .submit-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 20px rgba(0,255,128,0.4); }
+  .submit-btn:active { transform: translateY(0); }
+  .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .admin-link { text-align: center; margin-top: 24px; padding-bottom: 30px; }
+  .admin-link a {
+    color: rgba(255,255,255,0.3); font-size: 12px; text-decoration: none; transition: color 0.3s;
+  }
+  .admin-link a:hover { color: rgba(255,255,255,0.6); }
+
+  /* 成功页 */
+  .success-page { text-align: center; padding: 60px 20px; }
+  .success-icon {
+    width: 72px; height: 72px; margin: 0 auto 20px; border-radius: 50%;
+    background: linear-gradient(135deg, #00ff80, #00ccff);
+    display: flex; align-items: center; justify-content: center; font-size: 36px;
+    box-shadow: 0 0 30px rgba(0,255,128,0.3);
+  }
+  .success-page h2 { font-size: 20px; margin-bottom: 8px; }
+  .success-page p { font-size: 14px; color: rgba(255,255,255,0.6); }
+
+  /* 管理后台 */
+  .admin-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 16px 20px; background: rgba(0,0,0,0.3);
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+  }
+  .admin-header h2 { font-size: 18px; }
+  .back-btn {
+    padding: 6px 14px; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+    background: transparent; color: #fff; font-size: 13px; cursor: pointer;
+  }
+  .back-btn:hover { background: rgba(255,255,255,0.1); }
+  .admin-toolbar {
+    display: flex; gap: 10px; padding: 14px 16px; flex-wrap: wrap; align-items: center;
+  }
+  .admin-toolbar .count { font-size: 13px; color: rgba(255,255,255,0.6); flex: 1; }
+  .export-btn {
+    padding: 8px 16px; border: none; border-radius: 6px;
+    background: linear-gradient(135deg, #00ff80, #00ccff); color: #0f0c29;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .export-btn:hover { box-shadow: 0 2px 12px rgba(0,255,128,0.3); }
+  .clear-btn {
+    padding: 8px 16px; border: 1px solid #ff4d6a; border-radius: 6px;
+    background: transparent; color: #ff4d6a; font-size: 13px; cursor: pointer;
+  }
+  .clear-btn:hover { background: rgba(255,77,106,0.1); }
+  .admin-table-wrap { padding: 0 8px 20px; overflow-x: auto; }
+  .admin-table {
+    width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px;
+  }
+  .admin-table th {
+    background: rgba(0,255,128,0.1); padding: 10px 8px; text-align: left;
+    font-weight: 600; white-space: nowrap; border-bottom: 2px solid rgba(0,255,128,0.3);
+    position: sticky; top: 0;
+  }
+  .admin-table td {
+    padding: 10px 8px; border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: rgba(255,255,255,0.8);
+  }
+  .admin-table tr:hover td { background: rgba(255,255,255,0.03); }
+  .del-link { color: #ff4d6a; cursor: pointer; font-size: 12px; text-decoration: underline; }
+  .empty-state { text-align: center; padding: 60px 20px; color: rgba(255,255,255,0.4); }
+  .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+  .loading-state { text-align: center; padding: 40px 20px; color: rgba(255,255,255,0.5); }
+
+  /* 密码弹窗 */
+  .password-modal {
+    display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.7); z-index: 100; justify-content: center; align-items: center;
+  }
+  .password-modal.show { display: flex; }
+  .password-box {
+    background: #1a1a2e; border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px; padding: 28px; width: 300px; text-align: center;
+  }
+  .password-box h3 { margin-bottom: 16px; font-size: 16px; }
+  .password-box input {
+    width: 100%; padding: 10px 12px;
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 6px;
+    background: rgba(255,255,255,0.06); color: #fff; font-size: 14px;
+    text-align: center; letter-spacing: 4px;
+  }
+  .password-box input:focus { outline: none; border-color: #00ff80; }
+  .password-box .pw-btns { display: flex; gap: 10px; margin-top: 16px; }
+  .password-box .pw-btns button {
+    flex: 1; padding: 8px; border-radius: 6px; font-size: 13px; cursor: pointer;
+  }
+  .pw-cancel { background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #fff; }
+  .pw-confirm { background: linear-gradient(135deg, #00ff80, #00ccff); border: none; color: #0f0c29; font-weight: 600; }
+  .pw-error { color: #ff4d6a; font-size: 12px; margin-top: 8px; display: none; }
+</style>
+</head>
+<body>
+
+<!-- ========== 报名表页面 ========== -->
+<div class="form-page" id="formPage" style="display:block">
+  <div class="header">
+    <h1>🏅 2026年荧光比赛</h1>
+    <div class="subtitle">扫码填写报名信息</div>
+  </div>
+  <div class="fluorescent-line"></div>
+  <form class="form-container" id="regForm" novalidate="">
+    <div class="form-group">
+      <label>姓名<span class="required">*</span></label>
+      <input type="text" id="name" placeholder="请输入姓名" maxlength="20" required="">
+      <div class="error-msg" id="nameErr">请输入姓名</div>
+    </div>
+    <div class="form-group">
+      <label>单位<span class="required">*</span></label>
+      <input type="text" id="org" placeholder="请输入所在单位" maxlength="50" required="">
+      <div class="error-msg" id="orgErr">请输入所在单位</div>
+    </div>
+    <div class="form-group">
+      <label>科室<span class="required">*</span></label>
+      <input type="text" id="dept" placeholder="请输入科室" maxlength="30" required="">
+      <div class="error-msg" id="deptErr">请输入科室</div>
+    </div>
+    <div class="form-group">
+      <label>电话<span class="required">*</span></label>
+      <input type="tel" id="phone" placeholder="请输入手机号" maxlength="11" required="">
+      <div class="error-msg" id="phoneErr">请输入正确的手机号</div>
+    </div>
+    <div class="form-group">
+      <label>省份<span class="required">*</span></label>
+      <select id="province" required="">
+        <option value="" selected="selected">请选择省份</option>
+        <option>北京</option><option>天津</option><option>上海</option><option>重庆</option>
+        <option>河北</option><option>山西</option><option>辽宁</option><option>吉林</option>
+        <option>黑龙江</option><option>江苏</option><option>浙江</option><option>安徽</option>
+        <option>福建</option><option>江西</option><option>山东</option><option>河南</option>
+        <option>湖北</option><option>湖南</option><option>广东</option><option>海南</option>
+        <option>四川</option><option>贵州</option><option>云南</option><option>陕西</option>
+        <option>甘肃</option><option>青海</option><option>台湾</option><option>内蒙古</option>
+        <option>广西</option><option>西藏</option><option>宁夏</option><option>新疆</option>
+        <option>香港</option><option>澳门</option>
+      </select>
+      <div class="error-msg" id="provinceErr">请选择省份</div>
+    </div>
+    <button type="submit" class="submit-btn" id="submitBtn">提 交 报 名</button>
+  </form>
+  <div class="admin-link">
+    <a href="javascript:void(0)" onclick="showPasswordModal()">管理后台</a>
+  </div>
+</div>
+
+<!-- ========== 提交成功页面 ========== -->
+<div class="success-page" id="successPage">
+  <div class="success-icon">✓</div>
+  <h2>报名成功！</h2>
+  <p>您已成功报名2026年荧光比赛</p>
+  <p style="margin-top:16px">
+    <button onclick="resetForm()" style="padding:10px 28px;border:1px solid rgba(0,255,128,0.4);border-radius:6px;background:transparent;color:#00ff80;cursor:pointer;font-size:14px;">继续报名</button>
+  </p>
+</div>
+
+<!-- ========== 管理后台 ========== -->
+<div class="admin-page" id="adminPage">
+  <div class="admin-header">
+    <h2>📊 报名数据管理</h2>
+    <button class="back-btn" onclick="showFormPage()">← 返回</button>
+  </div>
+  <div class="admin-toolbar">
+    <span class="count" id="countInfo">加载中...</span>
+    <button class="export-btn" onclick="exportCSV()">📥 导出 Excel</button>
+    <button class="clear-btn" onclick="clearData()">🗑 清空数据</button>
+  </div>
+  <div class="admin-table-wrap">
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>#</th><th>姓名</th><th>单位</th><th>科室</th>
+          <th>电话</th><th>省份</th><th>提交时间</th><th>操作</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none">
+      <div class="icon">📋</div><p>暂无报名数据</p>
+    </div>
+    <div class="loading-state" id="loadingState">⏳ 加载中...</div>
+  </div>
+</div>
+
+<!-- ========== 密码弹窗 ========== -->
+<div class="password-modal" id="pwModal">
+  <div class="password-box">
+    <h3>🔒 管理后台验证</h3>
+    <input type="password" id="pwInput" placeholder="输入管理密码" maxlength="20">
+    <div class="pw-error" id="pwError">密码错误</div>
+    <div class="pw-btns">
+      <button class="pw-cancel" onclick="hidePasswordModal()">取消</button>
+      <button class="pw-confirm" onclick="checkPassword()">确认</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== 已配置的 Supabase 连接信息（硬编码） =====
+const SUPABASE_URL = 'https://bkvbdpbwcsdxdboemnod.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_TOjhRBwn7cNz5ud8GBq5nQ_HJvdYdms';
+const ADMIN_PASSWORD = '2026fluor';
+
+let sb = null;
+
+// ===== 初始化 =====
+(function boot() {
+  sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+})();
+
+// ===== 表单验证 =====
+function validate() {
+  let ok = true;
+  const checks = [
+    { id: 'name', test: v => v.trim().length > 0 },
+    { id: 'org', test: v => v.trim().length > 0 },
+    { id: 'dept', test: v => v.trim().length > 0 },
+    { id: 'phone', test: v => /^1\d{10}$/.test(v.trim()) },
+    { id: 'province', test: v => v !== '' }
+  ];
+  checks.forEach(c => {
+    const el = document.getElementById(c.id);
+    const err = document.getElementById(c.id + 'Err');
+    if (!c.test(el.value)) { err.style.display = 'block'; ok = false; }
+    else { err.style.display = 'none'; }
+  });
+  return ok;
+}
+
+['name','org','dept','phone','province'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    const err = document.getElementById(id + 'Err');
+    if (err) err.style.display = 'none';
+  });
+});
+
+// ===== 提交表单 =====
+document.getElementById('regForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  if (!validate() || !sb) return;
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = '提交中...';
+
+  try {
+    const { error } = await sb.from('registrations').insert([{
+      name: document.getElementById('name').value.trim(),
+      org: document.getElementById('org').value.trim(),
+      dept: document.getElementById('dept').value.trim(),
+      phone: document.getElementById('phone').value.trim(),
+      province: document.getElementById('province').value
+    }]);
+
+    if (error) throw error;
+
+    document.getElementById('formPage').style.display = 'none';
+    document.getElementById('successPage').style.display = 'block';
+  } catch (err) {
+    alert('提交失败：' + (err.message || '请检查网络和配置'));
+    btn.disabled = false;
+    btn.textContent = '提 交 报 名';
+  }
+});
+
+// ===== 重置表单 =====
+function resetForm() {
+  document.getElementById('regForm').reset();
+  document.getElementById('submitBtn').disabled = false;
+  document.getElementById('submitBtn').textContent = '提 交 报 名';
+  document.getElementById('successPage').style.display = 'none';
+  document.getElementById('formPage').style.display = 'block';
+}
+
+// ===== 管理后台 =====
+function showFormPage() {
+  document.getElementById('adminPage').style.display = 'none';
+  document.getElementById('formPage').style.display = 'block';
+}
+
+function showPasswordModal() {
+  document.getElementById('pwModal').classList.add('show');
+  document.getElementById('pwInput').value = '';
+  document.getElementById('pwError').style.display = 'none';
+  setTimeout(() => document.getElementById('pwInput').focus(), 100);
+}
+function hidePasswordModal() { document.getElementById('pwModal').classList.remove('show'); }
+
+document.getElementById('pwInput').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter') checkPassword();
+});
+
+function checkPassword() {
+  if (document.getElementById('pwInput').value === ADMIN_PASSWORD) {
+    hidePasswordModal();
+    showAdminPage();
+  } else {
+    document.getElementById('pwError').style.display = 'block';
+  }
+}
+
+function showAdminPage() {
+  document.getElementById('formPage').style.display = 'none';
+  document.getElementById('successPage').style.display = 'none';
+  document.getElementById('adminPage').style.display = 'block';
+  loadData();
+}
+
+async function loadData() {
+  const tbody = document.getElementById('tableBody');
+  const empty = document.getElementById('emptyState');
+  const loading = document.getElementById('loadingState');
+  loading.style.display = 'block';
+  empty.style.display = 'none';
+  tbody.innerHTML = '';
+
+  try {
+    const { data, error } = await sb
+      .from('registrations')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .limit(1000);
+
+    if (error) throw error;
+
+    loading.style.display = 'none';
+    document.getElementById('countInfo').textContent = '共 ' + data.length + ' 条记录';
+
+    if (data.length === 0) { empty.style.display = 'block'; return; }
+
+    tbody.innerHTML = data.map((r, i) => {
+      const t = r.created_at ? new Date(r.created_at).toLocaleString('zh-CN', { hour12: false }) : '';
+      return '<tr>' +
+        '<td>' + (data.length - i) + '</td>' +
+        '<td>' + esc(r.name) + '</td>' +
+        '<td>' + esc(r.org) + '</td>' +
+        '<td>' + esc(r.dept) + '</td>' +
+        '<td>' + esc(r.phone) + '</td>' +
+        '<td>' + esc(r.province) + '</td>' +
+        '<td>' + esc(t) + '</td>' +
+        '<td><span class="del-link" onclick="delRecord(' + r.id + ')">删除</span></td>' +
+      '</tr>';
+    }).join('');
+  } catch (err) {
+    loading.textContent = '❌ 加载失败：' + err.message;
+  }
+}
+
+function esc(s) {
+  const d = document.createElement('div');
+  d.textContent = s || '';
+  return d.innerHTML;
+}
+
+async function delRecord(id) {
+  if (!confirm('确定删除该条记录？')) return;
+  try {
+    const { error } = await sb.from('registrations').delete().eq('id', id);
+    if (error) throw error;
+    loadData();
+  } catch (err) {
+    alert('删除失败：' + err.message);
+  }
+}
+
+// ===== 导出CSV =====
+async function exportCSV() {
+  try {
+    const { data, error } = await sb
+      .from('registrations')
+      .select('*')
+      .order('created_at', { ascending: true })
+      .limit(1000);
+
+    if (error) throw error;
+    if (data.length === 0) { alert('暂无数据可导出'); return; }
+
+    const BOM = '\uFEFF';
+    const headers = ['序号','姓名','单位','科室','电话','省份','提交时间'];
+    const rows = data.map((r, i) => {
+      const t = r.created_at ? new Date(r.created_at).toLocaleString('zh-CN', { hour12: false }) : '';
+      return [i + 1, r.name, r.org, r.dept, r.phone, r.province, t]
+        .map(v => '"' + String(v || '').replace(/"/g, '""') + '"')
+        .join(',');
+    });
+
+    const csv = BOM + headers.join(',') + '\n' + rows.join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '2026年荧光比赛报名表_' + new Date().toLocaleDateString('zh-CN').replace(/\//g, '-') + '.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  } catch (err) {
+    alert('导出失败：' + err.message);
+  }
+}
+
+// ===== 清空数据 =====
+async function clearData() {
+  if (!confirm('确定要清空所有报名数据吗？此操作不可恢复！')) return;
+  try {
+    const { data: allData } = await sb.from('registrations').select('id').limit(1000);
+    if (allData && allData.length > 0) {
+      const ids = allData.map(r => r.id);
+      const { error } = await sb.from('registrations').delete().in('id', ids);
+      if (error) throw error;
+    }
+    loadData();
+  } catch (err) {
+    alert('清空失败：' + err.message);
+  }
+}
+</script>
+
+</body></html>
